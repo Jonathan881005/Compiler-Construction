@@ -1,0 +1,2582 @@
+規則由於衝突而在剖析器中無用
+
+   82 $@10: %empty
+
+
+狀態 8 衝突：12 項縮減/縮減
+狀態 40 衝突：1 項縮減/縮減
+狀態 41 衝突：1 項縮減/縮減
+狀態 42 衝突：1 項縮減/縮減
+狀態 46 衝突：1 項偏移/縮減
+狀態 106 衝突：1 項偏移/縮減，1 項縮減/縮減
+狀態 111 衝突：1 項偏移/縮減
+
+
+文法
+
+    0 $accept: Program $end
+
+    1 Program: StatementList
+
+    2 StatementList: StatementList Statement
+    3              | Statement
+
+    4 Statement: DeclatationStmt NEWLINE
+    5          | SimpleStmt NEWLINE
+    6          | Block NEWLINE
+    7          | IfStmt NEWLINE
+    8          | ForStmt NEWLINE
+    9          | PrintStmt NEWLINE
+   10          | NEWLINE
+
+   11 DeclatationStmt: VAR ID TypeName
+   12                | VAR ID TypeName ASSIGN Expression
+   13                | VAR ID ArrayType
+   14                | VAR ID ArrayType ASSIGN Expression
+
+   15 Type: TypeName
+   16     | ArrayType
+
+   17 TypeName: INT
+   18         | FLOAT
+   19         | STRING
+   20         | BOOL
+
+   21 ArrayType: '[' Expression ']' Type
+
+   22 boolexp: Expression
+
+   23 Expression: EL
+   24           | boolexp LAND Expression
+   25           | Expression LOR boolexp
+
+   26 EL: EL GTR Term
+   27   | EL LSS Term
+   28   | EL GEQ Term
+
+   29 $@1: %empty
+
+   30 EL: EL LEQ Term $@1
+   31   | EL EQL Term
+   32   | EL NEQ Term
+   33   | EL ADD Term
+   34   | EL SUB Term
+   35   | Term
+
+   36 Term: Term MUL factor
+   37     | Term QUO factor
+   38     | Term REM factor
+   39     | factor
+
+   40 factor: Operand
+   41       | INT '(' factor ')'
+   42       | FLOAT '(' factor ')'
+   43       | ADD factor
+   44       | SUB factor
+   45       | NOT factor
+
+   46 $@2: %empty
+
+   47 factor: factor $@2 '[' Expression ']'
+
+   48 Operand: Literal
+   49        | ID
+   50        | '(' Expression ')'
+
+   51 Literal: INT_LIT
+   52        | FLOAT_LIT
+   53        | TRUE
+   54        | FALSE
+   55        | '"' STRING_LIT '"'
+
+   56 SimpleStmt: AssignmentStmt
+   57           | ExpressionStmt
+   58           | IncDecStmt
+
+   59 $@3: %empty
+
+   60 AssignmentStmt: Expression $@3 ASSIGN EL
+
+   61 $@4: %empty
+
+   62 AssignmentStmt: Expression $@4 ADD_ASSIGN EL
+   63               | Expression SUB_ASSIGN EL
+   64               | Expression MUL_ASSIGN EL
+   65               | Expression QUO_ASSIGN EL
+   66               | Expression REM_ASSIGN EL
+
+   67 ExpressionStmt: Expression
+
+   68 IncDecStmt: Expression INC
+   69           | Expression DEC
+
+   70 $@5: %empty
+
+   71 Block: '{' $@5 StatementList '}'
+
+   72 IfStmt: IF Condition Block
+   73       | IF Condition Block ELSE Block
+   74       | IF Condition Block ELSE IfStmt
+
+   75 $@6: %empty
+
+   76 Condition: boolexp $@6
+
+   77 ForStmt: SimpleFor
+
+   78 $@7: %empty
+
+   79 $@8: %empty
+
+   80 $@9: %empty
+
+   81 ForStmt: FOR $@7 ForClause $@8 Block $@9
+
+   82 $@10: %empty
+
+   83 $@11: %empty
+
+   84 $@12: %empty
+
+   85 SimpleFor: FOR $@10 Expression $@11 Block $@12
+
+   86 ForClause: InitStmt ';' Condition ';' PostStmt
+
+   87 InitStmt: SimpleStmt
+
+   88 PostStmt: SimpleStmt
+
+   89 PrintStmt: PRINT '(' Expression ')'
+   90          | PRINTLN '(' Expression ')'
+
+
+終結語詞，附有它們出現處的規則
+
+$end (0) 0
+'"' (34) 55
+'(' (40) 41 42 50 89 90
+')' (41) 41 42 50 89 90
+';' (59) 86
+'[' (91) 21 47
+']' (93) 21 47
+'{' (123) 71
+'}' (125) 71
+error (256)
+GTR (258) 26
+LSS (259) 27
+GEQ (260) 28
+LEQ (261) 30
+EQL (262) 31
+NEQ (263) 32
+ADD (264) 33 43
+SUB (265) 34 44
+MUL (266) 36
+QUO (267) 37
+REM (268) 38
+INC (269) 68
+DEC (270) 69
+ASSIGN (271) 12 14 60
+ADD_ASSIGN (272) 62
+SUB_ASSIGN (273) 63
+MUL_ASSIGN (274) 64
+QUO_ASSIGN (275) 65
+REM_ASSIGN (276) 66
+LAND (277) 24
+LOR (278) 25
+NOT (279) 45
+NEWLINE (280) 4 5 6 7 8 9 10
+PRINT (281) 89
+PRINTLN (282) 90
+IF (283) 72 73 74
+ELSE (284) 73 74
+FOR (285) 81 85
+INT (286) 17 41
+FLOAT (287) 18 42
+BOOL (288) 20
+TRUE (289) 53
+FALSE (290) 54
+STRING (291) 19
+VAR (292) 11 12 13 14
+INT_LIT (293) 51
+FLOAT_LIT (294) 52
+STRING_LIT (295) 55
+ID (296) 11 12 13 14 49
+
+
+非終結語詞，附有它們出現處的規則
+
+$accept (50)
+    於左側： 0
+Program (51)
+    於左側： 1, 於右側： 0
+StatementList (52)
+    於左側： 2 3, 於右側： 1 2 71
+Statement (53)
+    於左側： 4 5 6 7 8 9 10, 於右側： 2 3
+DeclatationStmt (54)
+    於左側： 11 12 13 14, 於右側： 4
+Type (55)
+    於左側： 15 16, 於右側： 21
+TypeName (56)
+    於左側： 17 18 19 20, 於右側： 11 12 15
+ArrayType (57)
+    於左側： 21, 於右側： 13 14 16
+boolexp (58)
+    於左側： 22, 於右側： 24 25 76
+Expression (59)
+    於左側： 23 24 25, 於右側： 12 14 21 22 24 25 47 50 60
+    62 63 64 65 66 67 68 69 85 89 90
+EL (60)
+    於左側： 26 27 28 30 31 32 33 34 35, 於右側： 23 26 27
+    28 30 31 32 33 34 60 62 63 64 65 66
+$@1 (61)
+    於左側： 29, 於右側： 30
+Term (62)
+    於左側： 36 37 38 39, 於右側： 26 27 28 30 31 32 33 34
+    35 36 37 38
+factor (63)
+    於左側： 40 41 42 43 44 45 47, 於右側： 36 37 38 39 41
+    42 43 44 45 47
+$@2 (64)
+    於左側： 46, 於右側： 47
+Operand (65)
+    於左側： 48 49 50, 於右側： 40
+Literal (66)
+    於左側： 51 52 53 54 55, 於右側： 48
+SimpleStmt (67)
+    於左側： 56 57 58, 於右側： 5 87 88
+AssignmentStmt (68)
+    於左側： 60 62 63 64 65 66, 於右側： 56
+$@3 (69)
+    於左側： 59, 於右側： 60
+$@4 (70)
+    於左側： 61, 於右側： 62
+ExpressionStmt (71)
+    於左側： 67, 於右側： 57
+IncDecStmt (72)
+    於左側： 68 69, 於右側： 58
+Block (73)
+    於左側： 71, 於右側： 6 72 73 74 81 85
+$@5 (74)
+    於左側： 70, 於右側： 71
+IfStmt (75)
+    於左側： 72 73 74, 於右側： 7 74
+Condition (76)
+    於左側： 76, 於右側： 72 73 74 86
+$@6 (77)
+    於左側： 75, 於右側： 76
+ForStmt (78)
+    於左側： 77 81, 於右側： 8
+$@7 (79)
+    於左側： 78, 於右側： 81
+$@8 (80)
+    於左側： 79, 於右側： 81
+$@9 (81)
+    於左側： 80, 於右側： 81
+SimpleFor (82)
+    於左側： 85, 於右側： 77
+$@10 (83)
+    於左側： 82, 於右側： 85
+$@11 (84)
+    於左側： 83, 於右側： 85
+$@12 (85)
+    於左側： 84, 於右側： 85
+ForClause (86)
+    於左側： 86, 於右側： 81
+InitStmt (87)
+    於左側： 87, 於右側： 86
+PostStmt (88)
+    於左側： 88, 於右側： 86
+PrintStmt (89)
+    於左側： 89 90, 於右側： 9
+
+
+狀態 0
+
+    0 $accept: . Program $end
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    NEWLINE    偏移，並進入狀態 4
+    PRINT      偏移，並進入狀態 5
+    PRINTLN    偏移，並進入狀態 6
+    IF         偏移，並進入狀態 7
+    FOR        偏移，並進入狀態 8
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    VAR        偏移，並進入狀態 13
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+    '{'        偏移，並進入狀態 19
+
+    Program          進入狀態 20
+    StatementList    進入狀態 21
+    Statement        進入狀態 22
+    DeclatationStmt  進入狀態 23
+    boolexp          進入狀態 24
+    Expression       進入狀態 25
+    EL               進入狀態 26
+    Term             進入狀態 27
+    factor           進入狀態 28
+    Operand          進入狀態 29
+    Literal          進入狀態 30
+    SimpleStmt       進入狀態 31
+    AssignmentStmt   進入狀態 32
+    ExpressionStmt   進入狀態 33
+    IncDecStmt       進入狀態 34
+    Block            進入狀態 35
+    IfStmt           進入狀態 36
+    ForStmt          進入狀態 37
+    SimpleFor        進入狀態 38
+    PrintStmt        進入狀態 39
+
+
+狀態 1
+
+   43 factor: ADD . factor
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 40
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 2
+
+   44 factor: SUB . factor
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 41
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 3
+
+   45 factor: NOT . factor
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 42
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 4
+
+   10 Statement: NEWLINE .
+
+    $預設  使用規則 10 以縮減 (Statement)
+
+
+狀態 5
+
+   89 PrintStmt: PRINT . '(' Expression ')'
+
+    '('  偏移，並進入狀態 43
+
+
+狀態 6
+
+   90 PrintStmt: PRINTLN . '(' Expression ')'
+
+    '('  偏移，並進入狀態 44
+
+
+狀態 7
+
+   72 IfStmt: IF . Condition Block
+   73       | IF . Condition Block ELSE Block
+   74       | IF . Condition Block ELSE IfStmt
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 45
+    Expression  進入狀態 46
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+    Condition   進入狀態 47
+
+
+狀態 8
+
+   81 ForStmt: FOR . $@7 ForClause $@8 Block $@9
+   85 SimpleFor: FOR . $@10 Expression $@11 Block $@12
+
+    ADD        使用規則 78 以縮減 ($@7)
+    ADD        [使用規則 82 以縮減 ($@10)]
+    SUB        使用規則 78 以縮減 ($@7)
+    SUB        [使用規則 82 以縮減 ($@10)]
+    NOT        使用規則 78 以縮減 ($@7)
+    NOT        [使用規則 82 以縮減 ($@10)]
+    INT        使用規則 78 以縮減 ($@7)
+    INT        [使用規則 82 以縮減 ($@10)]
+    FLOAT      使用規則 78 以縮減 ($@7)
+    FLOAT      [使用規則 82 以縮減 ($@10)]
+    TRUE       使用規則 78 以縮減 ($@7)
+    TRUE       [使用規則 82 以縮減 ($@10)]
+    FALSE      使用規則 78 以縮減 ($@7)
+    FALSE      [使用規則 82 以縮減 ($@10)]
+    INT_LIT    使用規則 78 以縮減 ($@7)
+    INT_LIT    [使用規則 82 以縮減 ($@10)]
+    FLOAT_LIT  使用規則 78 以縮減 ($@7)
+    FLOAT_LIT  [使用規則 82 以縮減 ($@10)]
+    ID         使用規則 78 以縮減 ($@7)
+    ID         [使用規則 82 以縮減 ($@10)]
+    '('        使用規則 78 以縮減 ($@7)
+    '('        [使用規則 82 以縮減 ($@10)]
+    '"'        使用規則 78 以縮減 ($@7)
+    '"'        [使用規則 82 以縮減 ($@10)]
+    $預設    使用規則 78 以縮減 ($@7)
+
+    $@7   進入狀態 48
+    $@10  進入狀態 49
+
+
+狀態 9
+
+   41 factor: INT . '(' factor ')'
+
+    '('  偏移，並進入狀態 50
+
+
+狀態 10
+
+   42 factor: FLOAT . '(' factor ')'
+
+    '('  偏移，並進入狀態 51
+
+
+狀態 11
+
+   53 Literal: TRUE .
+
+    $預設  使用規則 53 以縮減 (Literal)
+
+
+狀態 12
+
+   54 Literal: FALSE .
+
+    $預設  使用規則 54 以縮減 (Literal)
+
+
+狀態 13
+
+   11 DeclatationStmt: VAR . ID TypeName
+   12                | VAR . ID TypeName ASSIGN Expression
+   13                | VAR . ID ArrayType
+   14                | VAR . ID ArrayType ASSIGN Expression
+
+    ID  偏移，並進入狀態 52
+
+
+狀態 14
+
+   51 Literal: INT_LIT .
+
+    $預設  使用規則 51 以縮減 (Literal)
+
+
+狀態 15
+
+   52 Literal: FLOAT_LIT .
+
+    $預設  使用規則 52 以縮減 (Literal)
+
+
+狀態 16
+
+   49 Operand: ID .
+
+    $預設  使用規則 49 以縮減 (Operand)
+
+
+狀態 17
+
+   50 Operand: '(' . Expression ')'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 53
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 18
+
+   55 Literal: '"' . STRING_LIT '"'
+
+    STRING_LIT  偏移，並進入狀態 54
+
+
+狀態 19
+
+   71 Block: '{' . $@5 StatementList '}'
+
+    $預設  使用規則 70 以縮減 ($@5)
+
+    $@5  進入狀態 55
+
+
+狀態 20
+
+    0 $accept: Program . $end
+
+    $end  偏移，並進入狀態 56
+
+
+狀態 21
+
+    1 Program: StatementList .
+    2 StatementList: StatementList . Statement
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    NEWLINE    偏移，並進入狀態 4
+    PRINT      偏移，並進入狀態 5
+    PRINTLN    偏移，並進入狀態 6
+    IF         偏移，並進入狀態 7
+    FOR        偏移，並進入狀態 8
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    VAR        偏移，並進入狀態 13
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+    '{'        偏移，並進入狀態 19
+
+    $預設  使用規則 1 以縮減 (Program)
+
+    Statement        進入狀態 57
+    DeclatationStmt  進入狀態 23
+    boolexp          進入狀態 24
+    Expression       進入狀態 25
+    EL               進入狀態 26
+    Term             進入狀態 27
+    factor           進入狀態 28
+    Operand          進入狀態 29
+    Literal          進入狀態 30
+    SimpleStmt       進入狀態 31
+    AssignmentStmt   進入狀態 32
+    ExpressionStmt   進入狀態 33
+    IncDecStmt       進入狀態 34
+    Block            進入狀態 35
+    IfStmt           進入狀態 36
+    ForStmt          進入狀態 37
+    SimpleFor        進入狀態 38
+    PrintStmt        進入狀態 39
+
+
+狀態 22
+
+    3 StatementList: Statement .
+
+    $預設  使用規則 3 以縮減 (StatementList)
+
+
+狀態 23
+
+    4 Statement: DeclatationStmt . NEWLINE
+
+    NEWLINE  偏移，並進入狀態 58
+
+
+狀態 24
+
+   24 Expression: boolexp . LAND Expression
+
+    LAND  偏移，並進入狀態 59
+
+
+狀態 25
+
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+   60 AssignmentStmt: Expression . $@3 ASSIGN EL
+   62               | Expression . $@4 ADD_ASSIGN EL
+   63               | Expression . SUB_ASSIGN EL
+   64               | Expression . MUL_ASSIGN EL
+   65               | Expression . QUO_ASSIGN EL
+   66               | Expression . REM_ASSIGN EL
+   67 ExpressionStmt: Expression .
+   68 IncDecStmt: Expression . INC
+   69           | Expression . DEC
+
+    INC         偏移，並進入狀態 60
+    DEC         偏移，並進入狀態 61
+    SUB_ASSIGN  偏移，並進入狀態 62
+    MUL_ASSIGN  偏移，並進入狀態 63
+    QUO_ASSIGN  偏移，並進入狀態 64
+    REM_ASSIGN  偏移，並進入狀態 65
+    LOR         偏移，並進入狀態 66
+
+    ASSIGN      使用規則 59 以縮減 ($@3)
+    ADD_ASSIGN  使用規則 61 以縮減 ($@4)
+    LAND        使用規則 22 以縮減 (boolexp)
+    $預設     使用規則 67 以縮減 (ExpressionStmt)
+
+    $@3  進入狀態 67
+    $@4  進入狀態 68
+
+
+狀態 26
+
+   23 Expression: EL .
+   26 EL: EL . GTR Term
+   27   | EL . LSS Term
+   28   | EL . GEQ Term
+   30   | EL . LEQ Term $@1
+   31   | EL . EQL Term
+   32   | EL . NEQ Term
+   33   | EL . ADD Term
+   34   | EL . SUB Term
+
+    GTR  偏移，並進入狀態 69
+    LSS  偏移，並進入狀態 70
+    GEQ  偏移，並進入狀態 71
+    LEQ  偏移，並進入狀態 72
+    EQL  偏移，並進入狀態 73
+    NEQ  偏移，並進入狀態 74
+    ADD  偏移，並進入狀態 75
+    SUB  偏移，並進入狀態 76
+
+    $預設  使用規則 23 以縮減 (Expression)
+
+
+狀態 27
+
+   35 EL: Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 35 以縮減 (EL)
+
+
+狀態 28
+
+   39 Term: factor .
+   47 factor: factor . $@2 '[' Expression ']'
+
+    '['      使用規則 46 以縮減 ($@2)
+    $預設  使用規則 39 以縮減 (Term)
+
+    $@2  進入狀態 80
+
+
+狀態 29
+
+   40 factor: Operand .
+
+    $預設  使用規則 40 以縮減 (factor)
+
+
+狀態 30
+
+   48 Operand: Literal .
+
+    $預設  使用規則 48 以縮減 (Operand)
+
+
+狀態 31
+
+    5 Statement: SimpleStmt . NEWLINE
+
+    NEWLINE  偏移，並進入狀態 81
+
+
+狀態 32
+
+   56 SimpleStmt: AssignmentStmt .
+
+    $預設  使用規則 56 以縮減 (SimpleStmt)
+
+
+狀態 33
+
+   57 SimpleStmt: ExpressionStmt .
+
+    $預設  使用規則 57 以縮減 (SimpleStmt)
+
+
+狀態 34
+
+   58 SimpleStmt: IncDecStmt .
+
+    $預設  使用規則 58 以縮減 (SimpleStmt)
+
+
+狀態 35
+
+    6 Statement: Block . NEWLINE
+
+    NEWLINE  偏移，並進入狀態 82
+
+
+狀態 36
+
+    7 Statement: IfStmt . NEWLINE
+
+    NEWLINE  偏移，並進入狀態 83
+
+
+狀態 37
+
+    8 Statement: ForStmt . NEWLINE
+
+    NEWLINE  偏移，並進入狀態 84
+
+
+狀態 38
+
+   77 ForStmt: SimpleFor .
+
+    $預設  使用規則 77 以縮減 (ForStmt)
+
+
+狀態 39
+
+    9 Statement: PrintStmt . NEWLINE
+
+    NEWLINE  偏移，並進入狀態 85
+
+
+狀態 40
+
+   43 factor: ADD factor .
+   47       | factor . $@2 '[' Expression ']'
+
+    '['      使用規則 43 以縮減 (factor)
+    '['      [使用規則 46 以縮減 ($@2)]
+    $預設  使用規則 43 以縮減 (factor)
+
+    $@2  進入狀態 80
+
+
+狀態 41
+
+   44 factor: SUB factor .
+   47       | factor . $@2 '[' Expression ']'
+
+    '['      使用規則 44 以縮減 (factor)
+    '['      [使用規則 46 以縮減 ($@2)]
+    $預設  使用規則 44 以縮減 (factor)
+
+    $@2  進入狀態 80
+
+
+狀態 42
+
+   45 factor: NOT factor .
+   47       | factor . $@2 '[' Expression ']'
+
+    '['      使用規則 45 以縮減 (factor)
+    '['      [使用規則 46 以縮減 ($@2)]
+    $預設  使用規則 45 以縮減 (factor)
+
+    $@2  進入狀態 80
+
+
+狀態 43
+
+   89 PrintStmt: PRINT '(' . Expression ')'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 86
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 44
+
+   90 PrintStmt: PRINTLN '(' . Expression ')'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 87
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 45
+
+   24 Expression: boolexp . LAND Expression
+   76 Condition: boolexp . $@6
+
+    LAND  偏移，並進入狀態 59
+
+    $預設  使用規則 75 以縮減 ($@6)
+
+    $@6  進入狀態 88
+
+
+狀態 46
+
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+
+    LOR  偏移，並進入狀態 66
+
+    LOR      [使用規則 22 以縮減 (boolexp)]
+    $預設  使用規則 22 以縮減 (boolexp)
+
+
+狀態 47
+
+   72 IfStmt: IF Condition . Block
+   73       | IF Condition . Block ELSE Block
+   74       | IF Condition . Block ELSE IfStmt
+
+    '{'  偏移，並進入狀態 19
+
+    Block  進入狀態 89
+
+
+狀態 48
+
+   81 ForStmt: FOR $@7 . ForClause $@8 Block $@9
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp         進入狀態 24
+    Expression      進入狀態 25
+    EL              進入狀態 26
+    Term            進入狀態 27
+    factor          進入狀態 28
+    Operand         進入狀態 29
+    Literal         進入狀態 30
+    SimpleStmt      進入狀態 90
+    AssignmentStmt  進入狀態 32
+    ExpressionStmt  進入狀態 33
+    IncDecStmt      進入狀態 34
+    ForClause       進入狀態 91
+    InitStmt        進入狀態 92
+
+
+狀態 49
+
+   85 SimpleFor: FOR $@10 . Expression $@11 Block $@12
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 93
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 50
+
+   41 factor: INT '(' . factor ')'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 94
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 51
+
+   42 factor: FLOAT '(' . factor ')'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 95
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 52
+
+   11 DeclatationStmt: VAR ID . TypeName
+   12                | VAR ID . TypeName ASSIGN Expression
+   13                | VAR ID . ArrayType
+   14                | VAR ID . ArrayType ASSIGN Expression
+
+    INT     偏移，並進入狀態 96
+    FLOAT   偏移，並進入狀態 97
+    BOOL    偏移，並進入狀態 98
+    STRING  偏移，並進入狀態 99
+    '['     偏移，並進入狀態 100
+
+    TypeName   進入狀態 101
+    ArrayType  進入狀態 102
+
+
+狀態 53
+
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+   50 Operand: '(' Expression . ')'
+
+    LOR  偏移，並進入狀態 66
+    ')'  偏移，並進入狀態 103
+
+    $預設  使用規則 22 以縮減 (boolexp)
+
+
+狀態 54
+
+   55 Literal: '"' STRING_LIT . '"'
+
+    '"'  偏移，並進入狀態 104
+
+
+狀態 55
+
+   71 Block: '{' $@5 . StatementList '}'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    NEWLINE    偏移，並進入狀態 4
+    PRINT      偏移，並進入狀態 5
+    PRINTLN    偏移，並進入狀態 6
+    IF         偏移，並進入狀態 7
+    FOR        偏移，並進入狀態 8
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    VAR        偏移，並進入狀態 13
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+    '{'        偏移，並進入狀態 19
+
+    StatementList    進入狀態 105
+    Statement        進入狀態 22
+    DeclatationStmt  進入狀態 23
+    boolexp          進入狀態 24
+    Expression       進入狀態 25
+    EL               進入狀態 26
+    Term             進入狀態 27
+    factor           進入狀態 28
+    Operand          進入狀態 29
+    Literal          進入狀態 30
+    SimpleStmt       進入狀態 31
+    AssignmentStmt   進入狀態 32
+    ExpressionStmt   進入狀態 33
+    IncDecStmt       進入狀態 34
+    Block            進入狀態 35
+    IfStmt           進入狀態 36
+    ForStmt          進入狀態 37
+    SimpleFor        進入狀態 38
+    PrintStmt        進入狀態 39
+
+
+狀態 56
+
+    0 $accept: Program $end .
+
+    $預設  接受
+
+
+狀態 57
+
+    2 StatementList: StatementList Statement .
+
+    $預設  使用規則 2 以縮減 (StatementList)
+
+
+狀態 58
+
+    4 Statement: DeclatationStmt NEWLINE .
+
+    $預設  使用規則 4 以縮減 (Statement)
+
+
+狀態 59
+
+   24 Expression: boolexp LAND . Expression
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 106
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 60
+
+   68 IncDecStmt: Expression INC .
+
+    $預設  使用規則 68 以縮減 (IncDecStmt)
+
+
+狀態 61
+
+   69 IncDecStmt: Expression DEC .
+
+    $預設  使用規則 69 以縮減 (IncDecStmt)
+
+
+狀態 62
+
+   63 AssignmentStmt: Expression SUB_ASSIGN . EL
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    EL       進入狀態 107
+    Term     進入狀態 27
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 63
+
+   64 AssignmentStmt: Expression MUL_ASSIGN . EL
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    EL       進入狀態 108
+    Term     進入狀態 27
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 64
+
+   65 AssignmentStmt: Expression QUO_ASSIGN . EL
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    EL       進入狀態 109
+    Term     進入狀態 27
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 65
+
+   66 AssignmentStmt: Expression REM_ASSIGN . EL
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    EL       進入狀態 110
+    Term     進入狀態 27
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 66
+
+   25 Expression: Expression LOR . boolexp
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 111
+    Expression  進入狀態 46
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 67
+
+   60 AssignmentStmt: Expression $@3 . ASSIGN EL
+
+    ASSIGN  偏移，並進入狀態 112
+
+
+狀態 68
+
+   62 AssignmentStmt: Expression $@4 . ADD_ASSIGN EL
+
+    ADD_ASSIGN  偏移，並進入狀態 113
+
+
+狀態 69
+
+   26 EL: EL GTR . Term
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 114
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 70
+
+   27 EL: EL LSS . Term
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 115
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 71
+
+   28 EL: EL GEQ . Term
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 116
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 72
+
+   30 EL: EL LEQ . Term $@1
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 117
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 73
+
+   31 EL: EL EQL . Term
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 118
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 74
+
+   32 EL: EL NEQ . Term
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 119
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 75
+
+   33 EL: EL ADD . Term
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 120
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 76
+
+   34 EL: EL SUB . Term
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    Term     進入狀態 121
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 77
+
+   36 Term: Term MUL . factor
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 122
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 78
+
+   37 Term: Term QUO . factor
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 123
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 79
+
+   38 Term: Term REM . factor
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    factor   進入狀態 124
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 80
+
+   47 factor: factor $@2 . '[' Expression ']'
+
+    '['  偏移，並進入狀態 125
+
+
+狀態 81
+
+    5 Statement: SimpleStmt NEWLINE .
+
+    $預設  使用規則 5 以縮減 (Statement)
+
+
+狀態 82
+
+    6 Statement: Block NEWLINE .
+
+    $預設  使用規則 6 以縮減 (Statement)
+
+
+狀態 83
+
+    7 Statement: IfStmt NEWLINE .
+
+    $預設  使用規則 7 以縮減 (Statement)
+
+
+狀態 84
+
+    8 Statement: ForStmt NEWLINE .
+
+    $預設  使用規則 8 以縮減 (Statement)
+
+
+狀態 85
+
+    9 Statement: PrintStmt NEWLINE .
+
+    $預設  使用規則 9 以縮減 (Statement)
+
+
+狀態 86
+
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+   89 PrintStmt: PRINT '(' Expression . ')'
+
+    LOR  偏移，並進入狀態 66
+    ')'  偏移，並進入狀態 126
+
+    $預設  使用規則 22 以縮減 (boolexp)
+
+
+狀態 87
+
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+   90 PrintStmt: PRINTLN '(' Expression . ')'
+
+    LOR  偏移，並進入狀態 66
+    ')'  偏移，並進入狀態 127
+
+    $預設  使用規則 22 以縮減 (boolexp)
+
+
+狀態 88
+
+   76 Condition: boolexp $@6 .
+
+    $預設  使用規則 76 以縮減 (Condition)
+
+
+狀態 89
+
+   72 IfStmt: IF Condition Block .
+   73       | IF Condition Block . ELSE Block
+   74       | IF Condition Block . ELSE IfStmt
+
+    ELSE  偏移，並進入狀態 128
+
+    $預設  使用規則 72 以縮減 (IfStmt)
+
+
+狀態 90
+
+   87 InitStmt: SimpleStmt .
+
+    $預設  使用規則 87 以縮減 (InitStmt)
+
+
+狀態 91
+
+   81 ForStmt: FOR $@7 ForClause . $@8 Block $@9
+
+    $預設  使用規則 79 以縮減 ($@8)
+
+    $@8  進入狀態 129
+
+
+狀態 92
+
+   86 ForClause: InitStmt . ';' Condition ';' PostStmt
+
+    ';'  偏移，並進入狀態 130
+
+
+狀態 93
+
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+   85 SimpleFor: FOR $@10 Expression . $@11 Block $@12
+
+    LOR  偏移，並進入狀態 66
+
+    '{'      使用規則 83 以縮減 ($@11)
+    $預設  使用規則 22 以縮減 (boolexp)
+
+    $@11  進入狀態 131
+
+
+狀態 94
+
+   41 factor: INT '(' factor . ')'
+   47       | factor . $@2 '[' Expression ']'
+
+    ')'  偏移，並進入狀態 132
+
+    $預設  使用規則 46 以縮減 ($@2)
+
+    $@2  進入狀態 80
+
+
+狀態 95
+
+   42 factor: FLOAT '(' factor . ')'
+   47       | factor . $@2 '[' Expression ']'
+
+    ')'  偏移，並進入狀態 133
+
+    $預設  使用規則 46 以縮減 ($@2)
+
+    $@2  進入狀態 80
+
+
+狀態 96
+
+   17 TypeName: INT .
+
+    $預設  使用規則 17 以縮減 (TypeName)
+
+
+狀態 97
+
+   18 TypeName: FLOAT .
+
+    $預設  使用規則 18 以縮減 (TypeName)
+
+
+狀態 98
+
+   20 TypeName: BOOL .
+
+    $預設  使用規則 20 以縮減 (TypeName)
+
+
+狀態 99
+
+   19 TypeName: STRING .
+
+    $預設  使用規則 19 以縮減 (TypeName)
+
+
+狀態 100
+
+   21 ArrayType: '[' . Expression ']' Type
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 134
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 101
+
+   11 DeclatationStmt: VAR ID TypeName .
+   12                | VAR ID TypeName . ASSIGN Expression
+
+    ASSIGN  偏移，並進入狀態 135
+
+    $預設  使用規則 11 以縮減 (DeclatationStmt)
+
+
+狀態 102
+
+   13 DeclatationStmt: VAR ID ArrayType .
+   14                | VAR ID ArrayType . ASSIGN Expression
+
+    ASSIGN  偏移，並進入狀態 136
+
+    $預設  使用規則 13 以縮減 (DeclatationStmt)
+
+
+狀態 103
+
+   50 Operand: '(' Expression ')' .
+
+    $預設  使用規則 50 以縮減 (Operand)
+
+
+狀態 104
+
+   55 Literal: '"' STRING_LIT '"' .
+
+    $預設  使用規則 55 以縮減 (Literal)
+
+
+狀態 105
+
+    2 StatementList: StatementList . Statement
+   71 Block: '{' $@5 StatementList . '}'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    NEWLINE    偏移，並進入狀態 4
+    PRINT      偏移，並進入狀態 5
+    PRINTLN    偏移，並進入狀態 6
+    IF         偏移，並進入狀態 7
+    FOR        偏移，並進入狀態 8
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    VAR        偏移，並進入狀態 13
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+    '{'        偏移，並進入狀態 19
+    '}'        偏移，並進入狀態 137
+
+    Statement        進入狀態 57
+    DeclatationStmt  進入狀態 23
+    boolexp          進入狀態 24
+    Expression       進入狀態 25
+    EL               進入狀態 26
+    Term             進入狀態 27
+    factor           進入狀態 28
+    Operand          進入狀態 29
+    Literal          進入狀態 30
+    SimpleStmt       進入狀態 31
+    AssignmentStmt   進入狀態 32
+    ExpressionStmt   進入狀態 33
+    IncDecStmt       進入狀態 34
+    Block            進入狀態 35
+    IfStmt           進入狀態 36
+    ForStmt          進入狀態 37
+    SimpleFor        進入狀態 38
+    PrintStmt        進入狀態 39
+
+
+狀態 106
+
+   22 boolexp: Expression .
+   24 Expression: boolexp LAND Expression .
+   25           | Expression . LOR boolexp
+
+    LOR  偏移，並進入狀態 66
+
+    LAND     使用規則 22 以縮減 (boolexp)
+    LAND     [使用規則 24 以縮減 (Expression)]
+    LOR      [使用規則 24 以縮減 (Expression)]
+    $預設  使用規則 24 以縮減 (Expression)
+
+
+狀態 107
+
+   26 EL: EL . GTR Term
+   27   | EL . LSS Term
+   28   | EL . GEQ Term
+   30   | EL . LEQ Term $@1
+   31   | EL . EQL Term
+   32   | EL . NEQ Term
+   33   | EL . ADD Term
+   34   | EL . SUB Term
+   63 AssignmentStmt: Expression SUB_ASSIGN EL .
+
+    GTR  偏移，並進入狀態 69
+    LSS  偏移，並進入狀態 70
+    GEQ  偏移，並進入狀態 71
+    LEQ  偏移，並進入狀態 72
+    EQL  偏移，並進入狀態 73
+    NEQ  偏移，並進入狀態 74
+    ADD  偏移，並進入狀態 75
+    SUB  偏移，並進入狀態 76
+
+    $預設  使用規則 63 以縮減 (AssignmentStmt)
+
+
+狀態 108
+
+   26 EL: EL . GTR Term
+   27   | EL . LSS Term
+   28   | EL . GEQ Term
+   30   | EL . LEQ Term $@1
+   31   | EL . EQL Term
+   32   | EL . NEQ Term
+   33   | EL . ADD Term
+   34   | EL . SUB Term
+   64 AssignmentStmt: Expression MUL_ASSIGN EL .
+
+    GTR  偏移，並進入狀態 69
+    LSS  偏移，並進入狀態 70
+    GEQ  偏移，並進入狀態 71
+    LEQ  偏移，並進入狀態 72
+    EQL  偏移，並進入狀態 73
+    NEQ  偏移，並進入狀態 74
+    ADD  偏移，並進入狀態 75
+    SUB  偏移，並進入狀態 76
+
+    $預設  使用規則 64 以縮減 (AssignmentStmt)
+
+
+狀態 109
+
+   26 EL: EL . GTR Term
+   27   | EL . LSS Term
+   28   | EL . GEQ Term
+   30   | EL . LEQ Term $@1
+   31   | EL . EQL Term
+   32   | EL . NEQ Term
+   33   | EL . ADD Term
+   34   | EL . SUB Term
+   65 AssignmentStmt: Expression QUO_ASSIGN EL .
+
+    GTR  偏移，並進入狀態 69
+    LSS  偏移，並進入狀態 70
+    GEQ  偏移，並進入狀態 71
+    LEQ  偏移，並進入狀態 72
+    EQL  偏移，並進入狀態 73
+    NEQ  偏移，並進入狀態 74
+    ADD  偏移，並進入狀態 75
+    SUB  偏移，並進入狀態 76
+
+    $預設  使用規則 65 以縮減 (AssignmentStmt)
+
+
+狀態 110
+
+   26 EL: EL . GTR Term
+   27   | EL . LSS Term
+   28   | EL . GEQ Term
+   30   | EL . LEQ Term $@1
+   31   | EL . EQL Term
+   32   | EL . NEQ Term
+   33   | EL . ADD Term
+   34   | EL . SUB Term
+   66 AssignmentStmt: Expression REM_ASSIGN EL .
+
+    GTR  偏移，並進入狀態 69
+    LSS  偏移，並進入狀態 70
+    GEQ  偏移，並進入狀態 71
+    LEQ  偏移，並進入狀態 72
+    EQL  偏移，並進入狀態 73
+    NEQ  偏移，並進入狀態 74
+    ADD  偏移，並進入狀態 75
+    SUB  偏移，並進入狀態 76
+
+    $預設  使用規則 66 以縮減 (AssignmentStmt)
+
+
+狀態 111
+
+   24 Expression: boolexp . LAND Expression
+   25           | Expression LOR boolexp .
+
+    LAND  偏移，並進入狀態 59
+
+    LAND     [使用規則 25 以縮減 (Expression)]
+    $預設  使用規則 25 以縮減 (Expression)
+
+
+狀態 112
+
+   60 AssignmentStmt: Expression $@3 ASSIGN . EL
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    EL       進入狀態 138
+    Term     進入狀態 27
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 113
+
+   62 AssignmentStmt: Expression $@4 ADD_ASSIGN . EL
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    EL       進入狀態 139
+    Term     進入狀態 27
+    factor   進入狀態 28
+    Operand  進入狀態 29
+    Literal  進入狀態 30
+
+
+狀態 114
+
+   26 EL: EL GTR Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 26 以縮減 (EL)
+
+
+狀態 115
+
+   27 EL: EL LSS Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 27 以縮減 (EL)
+
+
+狀態 116
+
+   28 EL: EL GEQ Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 28 以縮減 (EL)
+
+
+狀態 117
+
+   30 EL: EL LEQ Term . $@1
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 29 以縮減 ($@1)
+
+    $@1  進入狀態 140
+
+
+狀態 118
+
+   31 EL: EL EQL Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 31 以縮減 (EL)
+
+
+狀態 119
+
+   32 EL: EL NEQ Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 32 以縮減 (EL)
+
+
+狀態 120
+
+   33 EL: EL ADD Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 33 以縮減 (EL)
+
+
+狀態 121
+
+   34 EL: EL SUB Term .
+   36 Term: Term . MUL factor
+   37     | Term . QUO factor
+   38     | Term . REM factor
+
+    MUL  偏移，並進入狀態 77
+    QUO  偏移，並進入狀態 78
+    REM  偏移，並進入狀態 79
+
+    $預設  使用規則 34 以縮減 (EL)
+
+
+狀態 122
+
+   36 Term: Term MUL factor .
+   47 factor: factor . $@2 '[' Expression ']'
+
+    '['      使用規則 46 以縮減 ($@2)
+    $預設  使用規則 36 以縮減 (Term)
+
+    $@2  進入狀態 80
+
+
+狀態 123
+
+   37 Term: Term QUO factor .
+   47 factor: factor . $@2 '[' Expression ']'
+
+    '['      使用規則 46 以縮減 ($@2)
+    $預設  使用規則 37 以縮減 (Term)
+
+    $@2  進入狀態 80
+
+
+狀態 124
+
+   38 Term: Term REM factor .
+   47 factor: factor . $@2 '[' Expression ']'
+
+    '['      使用規則 46 以縮減 ($@2)
+    $預設  使用規則 38 以縮減 (Term)
+
+    $@2  進入狀態 80
+
+
+狀態 125
+
+   47 factor: factor $@2 '[' . Expression ']'
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 141
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 126
+
+   89 PrintStmt: PRINT '(' Expression ')' .
+
+    $預設  使用規則 89 以縮減 (PrintStmt)
+
+
+狀態 127
+
+   90 PrintStmt: PRINTLN '(' Expression ')' .
+
+    $預設  使用規則 90 以縮減 (PrintStmt)
+
+
+狀態 128
+
+   73 IfStmt: IF Condition Block ELSE . Block
+   74       | IF Condition Block ELSE . IfStmt
+
+    IF   偏移，並進入狀態 7
+    '{'  偏移，並進入狀態 19
+
+    Block   進入狀態 142
+    IfStmt  進入狀態 143
+
+
+狀態 129
+
+   81 ForStmt: FOR $@7 ForClause $@8 . Block $@9
+
+    '{'  偏移，並進入狀態 19
+
+    Block  進入狀態 144
+
+
+狀態 130
+
+   86 ForClause: InitStmt ';' . Condition ';' PostStmt
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 45
+    Expression  進入狀態 46
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+    Condition   進入狀態 145
+
+
+狀態 131
+
+   85 SimpleFor: FOR $@10 Expression $@11 . Block $@12
+
+    '{'  偏移，並進入狀態 19
+
+    Block  進入狀態 146
+
+
+狀態 132
+
+   41 factor: INT '(' factor ')' .
+
+    $預設  使用規則 41 以縮減 (factor)
+
+
+狀態 133
+
+   42 factor: FLOAT '(' factor ')' .
+
+    $預設  使用規則 42 以縮減 (factor)
+
+
+狀態 134
+
+   21 ArrayType: '[' Expression . ']' Type
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+
+    LOR  偏移，並進入狀態 66
+    ']'  偏移，並進入狀態 147
+
+    $預設  使用規則 22 以縮減 (boolexp)
+
+
+狀態 135
+
+   12 DeclatationStmt: VAR ID TypeName ASSIGN . Expression
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 148
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 136
+
+   14 DeclatationStmt: VAR ID ArrayType ASSIGN . Expression
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp     進入狀態 24
+    Expression  進入狀態 149
+    EL          進入狀態 26
+    Term        進入狀態 27
+    factor      進入狀態 28
+    Operand     進入狀態 29
+    Literal     進入狀態 30
+
+
+狀態 137
+
+   71 Block: '{' $@5 StatementList '}' .
+
+    $預設  使用規則 71 以縮減 (Block)
+
+
+狀態 138
+
+   26 EL: EL . GTR Term
+   27   | EL . LSS Term
+   28   | EL . GEQ Term
+   30   | EL . LEQ Term $@1
+   31   | EL . EQL Term
+   32   | EL . NEQ Term
+   33   | EL . ADD Term
+   34   | EL . SUB Term
+   60 AssignmentStmt: Expression $@3 ASSIGN EL .
+
+    GTR  偏移，並進入狀態 69
+    LSS  偏移，並進入狀態 70
+    GEQ  偏移，並進入狀態 71
+    LEQ  偏移，並進入狀態 72
+    EQL  偏移，並進入狀態 73
+    NEQ  偏移，並進入狀態 74
+    ADD  偏移，並進入狀態 75
+    SUB  偏移，並進入狀態 76
+
+    $預設  使用規則 60 以縮減 (AssignmentStmt)
+
+
+狀態 139
+
+   26 EL: EL . GTR Term
+   27   | EL . LSS Term
+   28   | EL . GEQ Term
+   30   | EL . LEQ Term $@1
+   31   | EL . EQL Term
+   32   | EL . NEQ Term
+   33   | EL . ADD Term
+   34   | EL . SUB Term
+   62 AssignmentStmt: Expression $@4 ADD_ASSIGN EL .
+
+    GTR  偏移，並進入狀態 69
+    LSS  偏移，並進入狀態 70
+    GEQ  偏移，並進入狀態 71
+    LEQ  偏移，並進入狀態 72
+    EQL  偏移，並進入狀態 73
+    NEQ  偏移，並進入狀態 74
+    ADD  偏移，並進入狀態 75
+    SUB  偏移，並進入狀態 76
+
+    $預設  使用規則 62 以縮減 (AssignmentStmt)
+
+
+狀態 140
+
+   30 EL: EL LEQ Term $@1 .
+
+    $預設  使用規則 30 以縮減 (EL)
+
+
+狀態 141
+
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+   47 factor: factor $@2 '[' Expression . ']'
+
+    LOR  偏移，並進入狀態 66
+    ']'  偏移，並進入狀態 150
+
+    $預設  使用規則 22 以縮減 (boolexp)
+
+
+狀態 142
+
+   73 IfStmt: IF Condition Block ELSE Block .
+
+    $預設  使用規則 73 以縮減 (IfStmt)
+
+
+狀態 143
+
+   74 IfStmt: IF Condition Block ELSE IfStmt .
+
+    $預設  使用規則 74 以縮減 (IfStmt)
+
+
+狀態 144
+
+   81 ForStmt: FOR $@7 ForClause $@8 Block . $@9
+
+    $預設  使用規則 80 以縮減 ($@9)
+
+    $@9  進入狀態 151
+
+
+狀態 145
+
+   86 ForClause: InitStmt ';' Condition . ';' PostStmt
+
+    ';'  偏移，並進入狀態 152
+
+
+狀態 146
+
+   85 SimpleFor: FOR $@10 Expression $@11 Block . $@12
+
+    $預設  使用規則 84 以縮減 ($@12)
+
+    $@12  進入狀態 153
+
+
+狀態 147
+
+   21 ArrayType: '[' Expression ']' . Type
+
+    INT     偏移，並進入狀態 96
+    FLOAT   偏移，並進入狀態 97
+    BOOL    偏移，並進入狀態 98
+    STRING  偏移，並進入狀態 99
+    '['     偏移，並進入狀態 100
+
+    Type       進入狀態 154
+    TypeName   進入狀態 155
+    ArrayType  進入狀態 156
+
+
+狀態 148
+
+   12 DeclatationStmt: VAR ID TypeName ASSIGN Expression .
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+
+    LOR  偏移，並進入狀態 66
+
+    LAND     使用規則 22 以縮減 (boolexp)
+    $預設  使用規則 12 以縮減 (DeclatationStmt)
+
+
+狀態 149
+
+   14 DeclatationStmt: VAR ID ArrayType ASSIGN Expression .
+   22 boolexp: Expression .
+   25 Expression: Expression . LOR boolexp
+
+    LOR  偏移，並進入狀態 66
+
+    LAND     使用規則 22 以縮減 (boolexp)
+    $預設  使用規則 14 以縮減 (DeclatationStmt)
+
+
+狀態 150
+
+   47 factor: factor $@2 '[' Expression ']' .
+
+    $預設  使用規則 47 以縮減 (factor)
+
+
+狀態 151
+
+   81 ForStmt: FOR $@7 ForClause $@8 Block $@9 .
+
+    $預設  使用規則 81 以縮減 (ForStmt)
+
+
+狀態 152
+
+   86 ForClause: InitStmt ';' Condition ';' . PostStmt
+
+    ADD        偏移，並進入狀態 1
+    SUB        偏移，並進入狀態 2
+    NOT        偏移，並進入狀態 3
+    INT        偏移，並進入狀態 9
+    FLOAT      偏移，並進入狀態 10
+    TRUE       偏移，並進入狀態 11
+    FALSE      偏移，並進入狀態 12
+    INT_LIT    偏移，並進入狀態 14
+    FLOAT_LIT  偏移，並進入狀態 15
+    ID         偏移，並進入狀態 16
+    '('        偏移，並進入狀態 17
+    '"'        偏移，並進入狀態 18
+
+    boolexp         進入狀態 24
+    Expression      進入狀態 25
+    EL              進入狀態 26
+    Term            進入狀態 27
+    factor          進入狀態 28
+    Operand         進入狀態 29
+    Literal         進入狀態 30
+    SimpleStmt      進入狀態 157
+    AssignmentStmt  進入狀態 32
+    ExpressionStmt  進入狀態 33
+    IncDecStmt      進入狀態 34
+    PostStmt        進入狀態 158
+
+
+狀態 153
+
+   85 SimpleFor: FOR $@10 Expression $@11 Block $@12 .
+
+    $預設  使用規則 85 以縮減 (SimpleFor)
+
+
+狀態 154
+
+   21 ArrayType: '[' Expression ']' Type .
+
+    $預設  使用規則 21 以縮減 (ArrayType)
+
+
+狀態 155
+
+   15 Type: TypeName .
+
+    $預設  使用規則 15 以縮減 (Type)
+
+
+狀態 156
+
+   16 Type: ArrayType .
+
+    $預設  使用規則 16 以縮減 (Type)
+
+
+狀態 157
+
+   88 PostStmt: SimpleStmt .
+
+    $預設  使用規則 88 以縮減 (PostStmt)
+
+
+狀態 158
+
+   86 ForClause: InitStmt ';' Condition ';' PostStmt .
+
+    $預設  使用規則 86 以縮減 (ForClause)

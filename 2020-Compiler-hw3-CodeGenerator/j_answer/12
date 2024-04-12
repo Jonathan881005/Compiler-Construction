@@ -1,0 +1,90 @@
+.source hw3.j
+.class public Main
+.super java/lang/Object
+.method public static main([Ljava/lang/String;)V
+.limit stack 100
+.limit locals 100 ;
+ldc 0
+istore 0
+ldc 999
+istore 1
+label0_begin:
+ldc 1
+istore 1
+label1_begin:
+iload 1
+ldc 9
+isub
+ifle label2_0
+iconst_0
+goto label2_1
+label2_0:
+iconst_1
+label2_1:
+goto label1_pre
+label1_post:
+iload 1
+ldc 1
+iadd
+istore 1
+goto label1_begin
+label1_pre:
+ifeq label1_end
+label3_begin:
+ldc 1
+istore 0
+label4_begin:
+iload 0
+ldc 9
+isub
+ifle label5_0
+iconst_0
+goto label5_1
+label5_0:
+iconst_1
+label5_1:
+goto label4_pre
+label4_post:
+iload 0
+ldc 1
+iadd
+istore 0
+goto label4_begin
+label4_pre:
+ifeq label4_end
+iload 1
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(I)V
+ldc "*"
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+iload 0
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(I)V
+ldc "="
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+iload 1
+iload 0
+imul
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(I)V
+ldc "\t"
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+goto label4_post
+label4_end:
+ldc "\n"
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+goto label1_post
+label1_end:
+return
+.end method

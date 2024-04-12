@@ -1,0 +1,61 @@
+.source hw3.j
+.class public Main
+.super java/lang/Object
+.method public static main([Ljava/lang/String;)V
+.limit stack 100
+.limit locals 100 ;
+ldc 400
+istore 0
+ldc 700
+istore 1
+iload 0
+ldc 400
+isub
+ifeq label0_0
+iconst_0
+goto label0_1
+label0_0:
+iconst_1
+label0_1:
+ifeq label1_false
+iload 1
+ldc 600
+isub
+ifle label2_0
+iconst_0
+goto label2_1
+label2_0:
+iconst_1
+label2_1:
+ifeq label3_false
+ldc "OuO\n"
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+goto label3_exit
+label3_false:
+iload 1
+ldc 700
+isub
+ifeq label4_0
+iconst_0
+goto label4_1
+label4_0:
+iconst_1
+label4_1:
+ifeq label5_false
+ldc "Value of v1 is 400 and v2 is 700"
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+goto label5_exit
+label5_false:
+ldc "QuQ\n"
+getstatic java/lang/System/out Ljava/io/PrintStream;
+swap
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+label5_exit:
+label3_exit:
+label1_false:
+return
+.end method
